@@ -1,0 +1,13 @@
+# Środowisko wirtualne
+venv/
+env/
+
+# Pliki tymczasowe Pythona
+__pycache__/
+*.pyc
+
+# Wgrane pliki użytkowników (nie chcemy cudzych zdjęć na GitHubie!)
+app/static/uploads/*
+
+# Zostawiamy sam folder uploads, żeby zachować strukturę katalogów
+!app/static/uploads/.gitkeep

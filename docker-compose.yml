@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  # Nasza aplikacja we Flasku
+  web:
+    build: .
+    container_name: photoapp_web
+    ports:
+      - "5000:5000"
+    environment:
+      # Nadpisujemy konfigurację z config.py, aby łączyć się z kontenerem 'db', a nie z 'localhost'
+      - DATABASE_URL=postgresql://postgres:zygzakmcqueen@db:5432/photo_db
+    depends_on:
+      - db
+    volumes:
+      # Trwały wolumen na zdjęcia użytkowników
+      - uploads_data:/app/app/static/uploads
+
+  # Nasza baza danych
+  db:
+    image: postgres:15-alpine
+    container_name: photoapp_postgres_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: zygzakmcqueen
+      POSTGRES_DB: photo_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_project_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_project_data:
+  uploads_data:

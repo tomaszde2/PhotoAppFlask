@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card p-4 shadow">
+            <h3>Dodaj nowe zdjęcie</h3>
+            <p class="text-muted small">Użytkownicy standardowi mogą dodać maksymalnie 5 zdjęć.</p>
+            <form method="POST" action="{{ url_for('main.upload_photo') }}" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="title" class="form-label">Tytuł zdjęcia</label>
+                    <input type="text" class="form-gradient form-control" id="title" name="title" required>
+                </div>
+                <div class="mb-3">
+                    <label for="file" class="form-label">Wybierz plik graficzny</label>
+                    <input type="file" class="form-control" id="file" name="file" accept="image/*" required>
+                </div>
+                <button type="submit" class="btn btn-success w-100">Wyślij plik</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="mb-4">Panel Administratora</h2>
+
+<div class="card shadow-sm mb-5">
+    <div class="card-header bg-warning text-dark fw-bold">Oczekujące wnioski o status Premium</div>
+    <div class="card-body">
+        {% if requests %}
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th>Użytkownik</th>
+                            <th>E-mail</th>
+                            <th>Data zgłoszenia</th>
+                            <th>Akcje</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for req in requests %}
+                            <tr>
+                                <td><strong>{{ req.user.username }}</strong></td>
+                                <td>{{ req.user.email }}</td>
+                                <td>{{ req.request_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                                <td>
+                                    <form action="{{ url_for('admin.handle_request', request_id=req.id, action='approve') }}" method="POST" class="d-inline">
+                                        <button type="submit" class="btn btn-success btn-sm">✔ Akceptuj</button>
+                                    </form>
+                                    <form action="{{ url_for('admin.handle_request', request_id=req.id, action='reject') }}" method="POST" class="d-inline">
+                                        <button type="submit" class="btn btn-danger btn-sm">✖ Odrzuć</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="text-muted m-0">Brak nowych próśb o status Premium.</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-header bg-secondary text-white fw-bold">Wszyscy użytkownicy w bazie</div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Nazwa użytkownika</th>
+                        <th>Email</th>
+                        <th>Rola</th>
+                        <th>Akcja</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user.id }}</td>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>
+                            {% if user.role == 'admin' %}
+                                <span class="badge bg-danger">Admin</span>
+                            {% elif user.role == 'premium' %}
+                                <span class="badge bg-primary">Premium</span>
+                            {% else %}
+                                <span class="badge bg-secondary">User</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <form action="{{ url_for('admin.delete_user', user_id=user.id) }}" method="POST" onsubmit="return confirm('Czy na pewno chcesz usunąć użytkownika {{ user.username }}? Usuwając go, skasujesz z bazy również wszystkie jego zdjęcia.');">
+                                <button type="submit" class="btn btn-danger btn-sm" {% if user.id == current_user.id %}disabled{% endif %}>Usuń konto</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
